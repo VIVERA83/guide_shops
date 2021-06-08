@@ -1,0 +1,51 @@
+.window {
+    display: none;
+    text-align: center;
+    margin: 0 auto;
+    padding-bottom: 5px;
+    width: 280px;
+    border: 1px solid #bbb;
+    border-radius: 15px;
+    background: orange;
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    right: 0;
+    top: 200px;
+}
+
+.window h3  {
+    margin: 5px;
+}
+
+.window h2{
+    color: red;
+}
+
+.window input {
+    width: 220px;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.button {
+    background: red;
+    cursor: pointer;
+}
+
+input: hover {
+    background: #ccc;
+}
+
+.close {
+    width: 20px;
+    height: 20px;
+    margin: 5px 5px 0 85%;
+    cursor: pointer;
+}
+.close:hover{
+    background: white;
+}

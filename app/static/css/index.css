@@ -1,0 +1,60 @@
+body {
+    background-color: antiquewhite;
+}
+
+.heading {
+    height: auto;
+    padding: 5px;
+    text-align: center;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    background-image: url(..\\images\\logo.jpg);
+}
+
+.heading div {
+    display: inline-block;
+}
+
+.heading li {
+    display: inline-block;
+}
+
+.heading input {
+    border-radius: 10px;
+    background-color: cornflowerblue;
+    background-blend-mode: darken;
+}
+
+.center {
+    text-align: justify;
+    margin: 0 25%;
+    width: 50%;
+    padding-bottom: 60%;
+    box-sizing: border-box;
+
+}
+
+.center input {
+    display: block;
+    margin: 5px auto
+}
+
+.menu_window ul {
+    list-style: none;
+}
+
+.footer {
+    height: auto;
+    padding: -60% box-sizing: border-box;
+}
+
+.gray {
+    display: none;
+    z-index: 100;
+    background-color: rgba(1, 1, 1, 0.75);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}

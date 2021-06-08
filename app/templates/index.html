@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block style_css %}
+    <link type="text/css" href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet" />
+    <link type="text/css" href="{{ url_for('static', filename='css/window.css')}}" rel="stylesheet" />
+    {% if visible%}
+        <style> #login_form {display: block}
+                #gray {display: block}
+        </style>
+    {% endif%}
+{% endblock%}
+{% block title %}
+    Справочник по магазинам
+{% endblock %}
+{% block content %}
+<div id="registration" class="window">
+        <img id="close" onclick="show('none', 'registration')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
+        <h3>Регистрация</h3>
+        <form action="" method="post">
+            {{registration_form.hidden_tag()}}
+
+            <input type="text" name="name" placeholder="Имя">
+            <input type="tel" name="phone" placeholder="Телефон, пример: 981-861-43-44">
+            <input type="text" name="psw" placeholder="пароль">
+            <input type="text" name="psw2" placeholder="повторите пароль">
+            <input class=button type="submit" name="registration" value="Зарегистрироваться">
+            Нажимая на "Зарегистрироваться" вы потверждаете что прочитали и согласны с нашими условиями и политекой конфидициальности
+        </form>
+    </div>
+    <div id="login_form" class="window" >
+        <img id="close" onclick="show('none', 'login_form')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
+        <h3>Авторизация</h3>
+        <form action = "" method = "post">
+            <input type="text" name="phone" placeholder="телефон в формате 1112223344">
+            <input type="password" name="psw" placeholder="пароль">
+            {% for key, message in get_flashed_messages(True) %}
+                <h2 > {{message}} </h2>
+            {% endfor %}
+            <input class="button" type="submit" name="login" value="Войти">
+        </form>
+    </div>
+    <div id="search_form" class="window">
+        <img id="close" onclick="show('none', 'search_form')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
+        <h3>Найти магазин</h3>
+        <form action="" method = "post">
+            <input type="text" name="name" placeholder="Введите магазин">
+            <input class="button" type="submit" name="search" value="Найти">
+        </form>
+    </div>
+    <div id="gray" class="gray"></div>
+    <div class="main_frame">
+        <div class="heading">
+            <div>
+                <h1>Спарвочник по магазинам</h1>
+            </div>
+            <div>
+                <ul>
+                    <li><input onclick="show('block','registration')" type="button" name="registration" value="Присоединиться"></li>
+                    <li><input onclick="show('block', 'login_form')" type="button" name="login" value="Войти"></li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="center">
+            <span>Цель сервиса помочь водителю быстрей ориентироваться в незнакомых районах, снабдив его необходимой информацией о точках доставки, таких как: способ подъезда к магазину с схемой и фотографиями, категория подъезда (малый формат, тягач, прицеп), возможности оставления прицепа, перекатки, информация о ближайшем месте прицепа от точки назначения.
+            </span>
+            <div>
+                <input onclick="show('block', 'search_form')" type="button" name="search" value="Найти ММ">
+                <input onclick="show('block','registration')" type="button" name="registration" value="Присоединиться">
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; Все права защищены.</p>
+            <p>Связаться с нами: <a href="mailto:vivera83@yandex.ru" target="_blank">vivera83@yandex.ru</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    function show(state, forms) {
+            document.getElementById(forms).style.display = state;
+            document.getElementById('gray').style.display = state;
+        }
+{% endblock %}
+
