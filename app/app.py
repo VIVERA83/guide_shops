@@ -9,11 +9,21 @@ db.init_app(app)
 app.app_context().push()
 db.create_all()
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
-    registration_form = RegistrationForm()
-    visible = None;
-    print("Запрос", [value for value in request.form.keys()])
+    print(request.method)
+    visible = None
+    if request.method == "POST":
+        print("Нажата кнопка: ", request.form.keys())
+    forms = [RegistrationForm(), LoginForm(), SearchForm()]
+        # {"registration": RegistrationForm(), "login_form": LoginForm(), "search_form": SearchForm()}
+    # forms_id = ["registration","login_form", "search_form"]
+    # registration_form = RegistrationForm()
+    # id_form = "registration"
+    # print(registration_form.__dict__)
+    # login_form = LoginForm()
+    # print(forms["registration"].id)
     if request.method == "POST":
         if request.form.get("login"):
             if len(request.form["phone"]) < 7:
@@ -21,9 +31,7 @@ def index():
                 flash("Ошибка телефона", category="error")
                 visible = 'block'
 
-
-
-    return render_template("index.html", visible=visible, registration_form=registration_form)
+    return render_template("index.html", visible=visible, forms=forms)
 
 
 if __name__ == '__main__':

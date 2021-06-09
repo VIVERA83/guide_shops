@@ -36,7 +36,7 @@
     cursor: pointer;
 }
 
-input: hover {
+.window input:hover {
     background: #ccc;
 }
 

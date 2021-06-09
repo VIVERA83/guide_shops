@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
+{% macro form (form_name)-%}
+    <div id="{{form_name.id_form}}" class="window">
+        <img id="close" onclick="show('none', '{{form_name.id_form}}')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
+        <form action="" method="post">
+        {{form_name.hidden_tag()}}
+        {% for field in form_name if field.name not in ["csrf_token", "submit"] -%}
+            {{field()}}
+        {% endfor -%}
+        {{ form_name.submit()}}
+        </form>
+    </div>
+{% endmacro %}
+
 {% block style_css %}
     <link type="text/css" href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet" />
     <link type="text/css" href="{{ url_for('static', filename='css/window.css')}}" rel="stylesheet" />
@@ -13,40 +26,9 @@
     Справочник по магазинам
 {% endblock %}
 {% block content %}
-<div id="registration" class="window">
-        <img id="close" onclick="show('none', 'registration')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
-        <h3>Регистрация</h3>
-        <form action="" method="post">
-            {{registration_form.hidden_tag()}}
-
-            <input type="text" name="name" placeholder="Имя">
-            <input type="tel" name="phone" placeholder="Телефон, пример: 981-861-43-44">
-            <input type="text" name="psw" placeholder="пароль">
-            <input type="text" name="psw2" placeholder="повторите пароль">
-            <input class=button type="submit" name="registration" value="Зарегистрироваться">
-            Нажимая на "Зарегистрироваться" вы потверждаете что прочитали и согласны с нашими условиями и политекой конфидициальности
-        </form>
-    </div>
-    <div id="login_form" class="window" >
-        <img id="close" onclick="show('none', 'login_form')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
-        <h3>Авторизация</h3>
-        <form action = "" method = "post">
-            <input type="text" name="phone" placeholder="телефон в формате 1112223344">
-            <input type="password" name="psw" placeholder="пароль">
-            {% for key, message in get_flashed_messages(True) %}
-                <h2 > {{message}} </h2>
-            {% endfor %}
-            <input class="button" type="submit" name="login" value="Войти">
-        </form>
-    </div>
-    <div id="search_form" class="window">
-        <img id="close" onclick="show('none', 'search_form')" class="close" src="{{url_for('static', filename='images/cross.png')}}">
-        <h3>Найти магазин</h3>
-        <form action="" method = "post">
-            <input type="text" name="name" placeholder="Введите магазин">
-            <input class="button" type="submit" name="search" value="Найти">
-        </form>
-    </div>
+    {% for form_name in forms%}
+        {{form(form_name)}}
+    {%endfor%}
     <div id="gray" class="gray"></div>
     <div class="main_frame">
         <div class="heading">
