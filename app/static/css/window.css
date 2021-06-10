@@ -18,15 +18,17 @@
     margin: 5px;
 }
 
-.window h2{
+.error{
+    background: none;
     color: red;
+    font-size: 12px;
 }
 
 .window input {
     width: 220px;
     margin: 0 auto;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding: 5px;
     border-radius: 10px;
 }

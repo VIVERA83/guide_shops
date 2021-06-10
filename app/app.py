@@ -1,7 +1,9 @@
-from flask import Flask, render_template, url_for, request, get_flashed_messages, flash
+from flask import Flask, render_template, url_for, request, get_flashed_messages
 from os import path
 from models import db
 from forms import RegistrationForm, LoginForm, SearchForm
+from werkzeug.security import generate_password_hash
+from models import Users
 
 app = Flask(__name__)
 app.config.from_pyfile(path.join(app.root_path, "config.py"))
@@ -12,27 +14,34 @@ db.create_all()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    print(request.method)
+    forms = {"Зарегистрироваться": RegistrationForm(),
+             "Войти": LoginForm(),
+             "Найти": SearchForm()}
     visible = None
     if request.method == "POST":
-        print("Нажата кнопка: ", request.form.keys())
-    forms = [RegistrationForm(), LoginForm(), SearchForm()]
-        # {"registration": RegistrationForm(), "login_form": LoginForm(), "search_form": SearchForm()}
-    # forms_id = ["registration","login_form", "search_form"]
-    # registration_form = RegistrationForm()
-    # id_form = "registration"
-    # print(registration_form.__dict__)
-    # login_form = LoginForm()
-    # print(forms["registration"].id)
-    if request.method == "POST":
-        if request.form.get("login"):
-            if len(request.form["phone"]) < 7:
-                print("login")
-                flash("Ошибка телефона", category="error")
-                visible = 'block'
+        if forms[request.form["submit"]].validate_on_submit():
+            if request.form["submit"] == "Зарегистрироваться":
+                hash_psw = generate_password_hash(request.form['psw'])
+                user = Users(name=request.form['name'],
+                             phone=request.form['phone'],
+                             psw=hash_psw)
+                db.session.add(user)
+                db.session.commit()
+            elif request.form["submit"] == "Войти":
+                print("Войти")
+            elif request.form["submit"] == "Найти":
+                print("Найти")
+        else:
+            visible = forms[request.form["submit"]].id_form
+            print(visible)
 
     return render_template("index.html", visible=visible, forms=forms)
 
+
+# @app.route('/login', methods)
+# def login():
+#     print("LOGIN")
+#     return "Привет"
 
 if __name__ == '__main__':
     # [print(key, value) for key, value in app.config.items()]

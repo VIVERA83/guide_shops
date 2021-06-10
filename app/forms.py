@@ -38,7 +38,7 @@ class MessageWidget:
         self.text = text
 
     def __call__(self, field, **kwargs):
-        return Markup('<span %s>%s</span>' % (self.html_params(**kwargs), field.text))
+        return Markup('<h5 %s>%s</h5>' % (self.html_params(**kwargs), field.text))
 
 
 class MessageField(Field):
@@ -56,26 +56,35 @@ class MessageField(Field):
 
 
 class RegistrationForm(FlaskForm):
-    id_form = "registration"
-    header = HeaderField(text='Заголовок')
-    name = StringField(validators=[InputRequired("ПРивет"), DataRequired(), Length(min=4, max=20)],
+    id_form = "registration_form"
+    header = HeaderField(text='Регистрация')
+    name = StringField(validators=[InputRequired(),
+                                   DataRequired(),
+                                   Length(min=4, max=20,
+                                          message="Длинна имени от 4 до 20 символов")],
                        render_kw={"placeholder": "Имя"})
-    phone = IntegerField(validators=[DataRequired(), NumberRange(min=9000000, max=9999999)],
+
+    phone = IntegerField(validators=[DataRequired(),
+                                     NumberRange(min=9000000000, max=9999999999,
+                                                 message="Неверный формат телефонного номера")],
                          render_kw={"placeholder": "Телефон, пример: 9818618643"})
-    psw = PasswordField(validators=[DataRequired(), Length(min=4, max=100)],
+    psw = PasswordField(validators=[DataRequired(),
+                                    Length(min=6, max=8,
+                                           message="Длинна пароля от 6 до 8 символов")],
                         render_kw={"placeholder": "Пароль"})
-    psw = PasswordField(validators=[InputRequired(), DataRequired(), EqualTo(psw)],
-                        render_kw={"placeholder": "Повторите пароль"})
+    psw2 = PasswordField(validators=[EqualTo("psw", message="Пароли не совпадают")],
+                         render_kw={"placeholder": "Повторите пароль"})
     submit = SubmitField("Зарегистрироваться", render_kw={"class": "button"})
-    text = MessageField(text='Нажимая на "Зарегистрироваться" вы потверждаете что прочитали и согласны с нашими условиями'
-                        ' и политекой конфидициальности')
+    text = MessageField(text='Нажимая на "Зарегистрироваться" вы потверждаете что прочитали и согласны с нашими '
+                             'условиями и политикой конфидициальности')
 
 
 class LoginForm(FlaskForm):
     id_form = "login_form"
-    phone = IntegerField("phone", validators=[NumberRange(min=9000000, max=9999999)],
+    header = HeaderField(text='Авторизация')
+    phone = IntegerField("phone", validators=[NumberRange(min=9000000000, max=9999999999)],
                          render_kw={"placeholder": "Телефон, пример: 9818618643"})
-    psw = PasswordField("Пароль :", validators=[DataRequired(), Length(min=4, max=100)],
+    psw = PasswordField("Пароль :", validators=[DataRequired(), Length(min=6, max=10)],
                         render_kw={"placeholder": "Пароль"})
 
     # remember = BooleanField("Запомнить", default=False)
@@ -84,6 +93,7 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     id_form = "search_form"
+    header = HeaderField(text='Поиск магазина')
     shop = StringField("name", validators=[DataRequired(), Length(min=4, max=20)],
                        render_kw={"placeholder": "Магазин, например: Манса"})
     submit = SubmitField("Найти")

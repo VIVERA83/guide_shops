@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" -%}
 
 {% macro form (form_name)-%}
     <div id="{{form_name.id_form}}" class="window">
@@ -6,6 +6,11 @@
         <form action="" method="post">
         {{form_name.hidden_tag()}}
         {% for field in form_name if field.name not in ["csrf_token", "submit"] -%}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <span class="error">{{error}}</span>
+                {% endfor%}
+            {% endif%}
             {{field()}}
         {% endfor -%}
         {{ form_name.submit()}}
@@ -13,22 +18,22 @@
     </div>
 {% endmacro %}
 
-{% block style_css %}
+{% block style_css -%}
     <link type="text/css" href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet" />
     <link type="text/css" href="{{ url_for('static', filename='css/window.css')}}" rel="stylesheet" />
-    {% if visible%}
-        <style> #login_form {display: block}
+    {% if visible -%}
+        <style> #{{visible}} {display: block}
                 #gray {display: block}
         </style>
-    {% endif%}
-{% endblock%}
-{% block title %}
+    {% endif-%}
+{% endblock-%}
+{% block title -%}
     Справочник по магазинам
-{% endblock %}
-{% block content %}
-    {% for form_name in forms%}
+{% endblock -%}
+{% block content -%}
+    {% for form_name in forms.values() -%}
         {{form(form_name)}}
-    {%endfor%}
+    {%endfor -%}
     <div id="gray" class="gray"></div>
     <div class="main_frame">
         <div class="heading">
@@ -37,10 +42,9 @@
             </div>
             <div>
                 <ul>
-                    <li><input onclick="show('block','registration')" type="button" name="registration" value="Присоединиться"></li>
+                    <li><input onclick="show('block','registration_form')" type="button" name="registration" value="Присоединиться"></li>
                     <li><input onclick="show('block', 'login_form')" type="button" name="login" value="Войти"></li>
                 </ul>
-
             </div>
         </div>
         <div class="center">
@@ -48,7 +52,7 @@
             </span>
             <div>
                 <input onclick="show('block', 'search_form')" type="button" name="search" value="Найти ММ">
-                <input onclick="show('block','registration')" type="button" name="registration" value="Присоединиться">
+                <input onclick="show('block','registration_form')" type="button" name="registration" value="Присоединиться">
             </div>
         </div>
         <div class="footer">
@@ -56,12 +60,11 @@
             <p>Связаться с нами: <a href="mailto:vivera83@yandex.ru" target="_blank">vivera83@yandex.ru</a></p>
         </div>
     </div>
-{% endblock %}
-
-{% block scripts %}
+{% endblock -%}
+{% block scripts -%}
     function show(state, forms) {
             document.getElementById(forms).style.display = state;
             document.getElementById('gray').style.display = state;
         }
-{% endblock %}
+{% endblock -%}
 
