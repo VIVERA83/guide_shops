@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, IntegerField, Field
-from wtforms.validators import DataRequired, Length, InputRequired, NumberRange, EqualTo
+from wtforms import StringField, SubmitField, PasswordField, IntegerField, Field, HiddenField
+from wtforms.validators import DataRequired, Length, InputRequired, NumberRange, EqualTo, ValidationError
 from wtforms.widgets import html_params
 from flask import Markup
+import re
 
 
 class HeaderWidget:
@@ -55,22 +56,42 @@ class MessageField(Field):
             return u''
 
 
+class TelValidator(object):
+
+    def __init__(self, message=None):
+        if message is None:
+            message = "Ошибка, пример +7981-880-41-44"
+        self.message = message
+
+    def __call__(self, form, field):
+        pattern = "^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$"
+        print("TelValidator=", field.data)
+
+        if not field.data:
+            raise ValidationError('Поле не может быть пустым')
+
+        if not re.fullmatch(pattern, field.data):
+                # print("re= ", re.fullmatch(pattern, field.data))
+            raise ValidationError(self.message)
+
+
 class RegistrationForm(FlaskForm):
     id_form = "registration_form"
+    name_form = HiddenField(render_kw={'value': id_form})
     header = HeaderField(text='Регистрация')
-    name = StringField(validators=[InputRequired(),
-                                   DataRequired(),
+    name = StringField(validators=[DataRequired(),
                                    Length(min=4, max=20,
                                           message="Длинна имени от 4 до 20 символов")],
                        render_kw={"placeholder": "Имя"})
 
-    phone = IntegerField(validators=[DataRequired(),
-                                     NumberRange(min=9000000000, max=9999999999,
-                                                 message="Неверный формат телефонного номера")],
-                         render_kw={"placeholder": "Телефон, пример: 9818618643"})
+    # phone = IntegerField(validators=[DataRequired(),
+    #                                  NumberRange(min=9000000000, max=9999999999,
+    #                                              message="Неверный формат телефонного номера")],
+    #                      render_kw={"placeholder": "Телефон, пример: 9818618643"})
+    phone = StringField(validators=[TelValidator()], render_kw={"placeholder": "тел. в формате +7(981)861-44-44"})
     psw = PasswordField(validators=[DataRequired(),
-                                    Length(min=6, max=8,
-                                           message="Длинна пароля от 6 до 8 символов")],
+                                    Length(min=6, max=20,
+                                           message="Длинна пароля от 6 до 20 символов")],
                         render_kw={"placeholder": "Пароль"})
     psw2 = PasswordField(validators=[EqualTo("psw", message="Пароли не совпадают")],
                          render_kw={"placeholder": "Повторите пароль"})
@@ -81,8 +102,9 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     id_form = "login_form"
+    name_form = HiddenField(render_kw={'value': id_form})
     header = HeaderField(text='Авторизация')
-    phone = IntegerField("phone", validators=[NumberRange(min=9000000000, max=9999999999)],
+    phone = StringField("phone", validators=[TelValidator()],
                          render_kw={"placeholder": "Телефон, пример: 9818618643"})
     psw = PasswordField("Пароль :", validators=[DataRequired(), Length(min=6, max=10)],
                         render_kw={"placeholder": "Пароль"})
@@ -93,6 +115,8 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     id_form = "search_form"
+    test = StringField(validators=[TelValidator()], render_kw={"placeholder": "тел. в формате +7(981)861-44-44"})
+    name_form = HiddenField(render_kw={'value': id_form})
     header = HeaderField(text='Поиск магазина')
     shop = StringField("name", validators=[DataRequired(), Length(min=4, max=20)],
                        render_kw={"placeholder": "Магазин, например: Манса"})
