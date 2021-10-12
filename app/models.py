@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 db = SQLAlchemy()
 
@@ -7,7 +9,7 @@ db = SQLAlchemy()
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
-    phone = db.Column(db.Integer, nullable=False, unique=True) # не повторяется
+    phone = db.Column(db.Integer, nullable=False, unique=True)  # не повторяется
     psw = db.Column(db.String(500))
     create_date = db.Column(db.DateTime, default=datetime.utcnow)
     avatar = db.Column(db.LargeBinary(), default=None)
@@ -18,3 +20,5 @@ class Users(db.Model):
     def __repr__(self):
         return f"<users {self.id}>"
 
+    def get_user(self, phone:int):
+        return self.query.filter_by(phone=phone).first()

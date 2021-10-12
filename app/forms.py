@@ -100,13 +100,18 @@ class RegistrationForm(FlaskForm):
                              'условиями и политикой конфидициальности')
 
 
+
+
 class LoginForm(FlaskForm):
     id_form = "login_form"
     name_form = HiddenField(render_kw={'value': id_form})
     header = HeaderField(text='Авторизация')
-    phone = StringField("phone", validators=[TelValidator()],
+    phone = StringField("phone",
+                         validators=[TelValidator()],
                          render_kw={"placeholder": "Телефон, пример: 9818618643"})
-    psw = PasswordField("Пароль :", validators=[DataRequired(), Length(min=6, max=10)],
+    psw = PasswordField("Пароль :",
+                        validators=[DataRequired(message="Пароль не может быть из пробелов"),
+                                    Length(min=6, max=10, message="Ошибка ввода пароля")],
                         render_kw={"placeholder": "Пароль"})
 
     # remember = BooleanField("Запомнить", default=False)
