@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-import re
 
 db = SQLAlchemy()
 
@@ -20,5 +18,5 @@ class Users(db.Model):
     def __repr__(self):
         return f"<users {self.id}>"
 
-    def get_user(self, phone:int):
+    def get_user(self, phone: int):
         return self.query.filter_by(phone=phone).first()

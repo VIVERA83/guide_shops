@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, IntegerField, Field, HiddenField
-from wtforms.validators import DataRequired, Length, InputRequired, NumberRange, EqualTo, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, Field, HiddenField
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from wtforms.widgets import html_params
 from flask import Markup
 import re
@@ -65,13 +65,11 @@ class TelValidator(object):
 
     def __call__(self, form, field):
         pattern = "^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$"
-        print("TelValidator=", field.data)
 
         if not field.data:
             raise ValidationError('Поле не может быть пустым')
 
         if not re.fullmatch(pattern, field.data):
-                # print("re= ", re.fullmatch(pattern, field.data))
             raise ValidationError(self.message)
 
 
@@ -83,12 +81,7 @@ class RegistrationForm(FlaskForm):
                                    Length(min=4, max=20,
                                           message="Длинна имени от 4 до 20 символов")],
                        render_kw={"placeholder": "Имя"})
-
-    # phone = IntegerField(validators=[DataRequired(),
-    #                                  NumberRange(min=9000000000, max=9999999999,
-    #                                              message="Неверный формат телефонного номера")],
-    #                      render_kw={"placeholder": "Телефон, пример: 9818618643"})
-    phone = StringField(validators=[TelValidator()], render_kw={"placeholder": "тел. в формате +7(981)861-44-44"})
+    phone = StringField(validators=[TelValidator()], render_kw={"placeholder": "тел. в формате +7(777)777-777-77"})
     psw = PasswordField(validators=[DataRequired(),
                                     Length(min=6, max=20,
                                            message="Длинна пароля от 6 до 20 символов")],
@@ -100,21 +93,17 @@ class RegistrationForm(FlaskForm):
                              'условиями и политикой конфидициальности')
 
 
-
-
 class LoginForm(FlaskForm):
     id_form = "login_form"
     name_form = HiddenField(render_kw={'value': id_form})
     header = HeaderField(text='Авторизация')
     phone = StringField("phone",
-                         validators=[TelValidator()],
-                         render_kw={"placeholder": "Телефон, пример: 9818618643"})
+                        validators=[TelValidator()],
+                        render_kw={"placeholder": "Телефон, пример: 9818618643"})
     psw = PasswordField("Пароль :",
                         validators=[DataRequired(message="Пароль не может быть из пробелов"),
                                     Length(min=6, max=10, message="Ошибка ввода пароля")],
                         render_kw={"placeholder": "Пароль"})
-
-    # remember = BooleanField("Запомнить", default=False)
     submit = SubmitField("Войти")
 
 
@@ -126,35 +115,3 @@ class SearchForm(FlaskForm):
     shop = StringField("name", validators=[DataRequired(), Length(min=4, max=20)],
                        render_kw={"placeholder": "Магазин, например: Манса"})
     submit = SubmitField("Найти")
-
-# Не трогать
-# class InlineButtonWidget(object):
-#     html_params = staticmethod(html_params)
-#
-#     def __init__(self, input_type='submit', text=''):
-#         self.input_type = input_type
-#         self.text = text
-#
-#     def __call__(self, field, **kwargs):
-#         kwargs.setdefault('id', field.id)
-#         kwargs.setdefault('type', self.input_type)
-#         if 'value' not in kwargs:
-#             kwargs['value'] = field._value()
-#         return Markup('<button type="submit" %s><span>%s</span></button>' % (self.html_params(name=field.name, **kwargs), field.text))
-#
-# # Не трогать
-# class InlineButton(Field):
-#   widget = InlineButtonWidget()
-#
-#   def __init__(self, label=None, validators=None, text='Save', **kwargs):
-#     super(InlineButton, self).__init__(label, validators, **kwargs)
-#     self.text = text
-#
-#   def _value(self):
-#         if self.data:
-#             return u''.join(self.data)
-#         else:
-#             return u''
-# class SignupForm(Form):
-#    # name = TextField('Name', [Length(min=1, max=200)])
-#    submit = InlineButton('submit', text='Save', description='Save this')

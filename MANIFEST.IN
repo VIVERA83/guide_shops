@@ -1,0 +1,3 @@
+graft flask_example\flask_example\templates
+graft flask_example\flask_example\static
+include flask_example\*.db
