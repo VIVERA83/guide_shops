@@ -3,9 +3,9 @@ from os import path
 from flask import Flask, render_template, request, flash
 from flask_login import LoginManager, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db, Users
-from .forms import RegistrationForm, LoginForm, SearchForm
-from .logins import UserLogin
+from models import db, Users
+from forms import RegistrationForm, LoginForm, SearchForm
+from logins import UserLogin
 
 app = Flask(__name__)
 app.config.from_pyfile(path.join(app.root_path, "config.py"))
